@@ -54,7 +54,7 @@ ax.set_xlabel("X Axis")
 ax.set_ylabel("Y Axis")
 ax.set_zlabel("Z Axis")
 ax.set_title("3D cuts in z Axis", fontsize=20)
-fig.savefig('secton3D.png')
+fig.savefig('section3D.png')
 #============================
 #graph of the cut
 figP=plt.figure(figsize=(10,10))
@@ -66,11 +66,16 @@ plt.xlabel("X Axis")
 plt.ylabel("Y Axis")
 plt.title("2D Cut in Z axis", fontsize=20)
 plt.grid()
-figP.savefig('secton2D.png')
+figP.savefig('section2D.png')
 #============================
 #NEXT: sectionate the 2D cut into pixels with density data and CM velocity.
 #============================
-
+#2D densitiy 
+figD=plt.figure(figsize=(10,10))
+plt.hist2d(Xseg,Yseg,bins=30)
+plt.xlabel("X Axis")
+plt.ylabel("Y Axis")
+plt.title("Density of 2D Cut in Z axis ", fontsize=20)
+figD.savefig("Density2D-30b.png")
 #============================
-
-
+#NEXT: Define Velocities 
