@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.stats import gaussian_kde
 
 #Data Loading========
 data1 = np.loadtxt("Halo1.txt", skiprows=8)
@@ -78,4 +79,18 @@ plt.ylabel("Y Axis")
 plt.title("Density of 2D Cut in Z axis ", fontsize=20)
 figD.savefig("Density2D-30b.png")
 #============================
-#NEXT: Define Velocities 
+#density map
+#datosD=np.Vstack([Xseg,Yseg])
+#kde=gaussian_kde(datosD)
+#
+#Ngrid=60
+#xgrid=np.linspace(0,1200,Ngrid)
+#ygrid=np.linspace(0,1200,Ngrid)
+#Xgrid,Ygrid=np.meshgrid(xgrid,ygrid)
+#Z=kde.evaluate(np.vstack([Xgrid.ravel(),Ygrid.ravel()]))
+#
+#figDD=plt.figure(figsize=(10,10))
+#figDD.imshow(Z.reshape(Xgrid.shape),origin='lower',aspect='auto',extent=[0,1200,0,1200])
+#figDD.savefig('DensitiyGauss.png')
+#doesnt work ,gaussian density
+#============================================
