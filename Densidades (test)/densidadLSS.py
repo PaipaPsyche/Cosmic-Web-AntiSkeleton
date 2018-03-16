@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from scipy.stats import gaussian_kde
+#from scipy.stats import gaussian_kde
 
 #Data Loading========
 data1 = np.loadtxt("Halo1.txt", skiprows=8)
@@ -44,40 +44,40 @@ def segregar_corte_z(z,dz):
 segregar_corte_z(200,10)
 #============================
 #graph
-fig=plt.figure(figsize=(10,10))
-ax=Axes3D(fig)
-ax.set_zlim(Lzi,Lzs)
-ax.scatter(Xseg,Yseg,Zseg,c='b',s=0.3,depthshade=False)
+#fig=plt.figure(figsize=(10,10))
+#ax=Axes3D(fig)
+#ax.set_zlim(Lzi,Lzs)
+#ax.scatter(Xseg,Yseg,Zseg,c='b',s=0.3,depthshade=False)
 segregar_corte_z(1000,10)
-ax.scatter(Xseg,Yseg,Zseg,c='g',s=0.3,depthshade=False)
-#Graphing 2 slides
-ax.set_xlabel("X Axis")
-ax.set_ylabel("Y Axis")
-ax.set_zlabel("Z Axis")
-ax.set_title("3D cuts in z Axis", fontsize=20)
-fig.savefig('section3D.png')
+#ax.scatter(Xseg,Yseg,Zseg,c='g',s=0.3,depthshade=False)
+##Graphing 2 slides
+#ax.set_xlabel("X Axis")
+#ax.set_ylabel("Y Axis")
+#ax.set_zlabel("Z Axis")
+#ax.set_title("3D cuts in z Axis", fontsize=20)
+#fig.savefig('section3D.png')
 #============================
 #graph of the cut
-figP=plt.figure(figsize=(10,10))
-ax2D = figP.gca()
-ax2D.set_xticks(np.arange(0, 1260, 60))
-ax2D.set_yticks(np.arange(0, 1260,60))
-plt.scatter(Xseg,Yseg,s=0.4)
-plt.xlabel("X Axis")
-plt.ylabel("Y Axis")
-plt.title("2D Cut in Z axis", fontsize=20)
-plt.grid()
-figP.savefig('section2D.png')
+#figP=plt.figure(figsize=(10,10))
+#ax2D = figP.gca()
+#ax2D.set_xticks(np.arange(0, 1260, 60))
+#ax2D.set_yticks(np.arange(0, 1260,60))
+#plt.scatter(Xseg,Yseg,s=0.4)
+#plt.xlabel("X Axis")
+#plt.ylabel("Y Axis")
+#plt.title("2D Cut in Z axis", fontsize=20)
+#plt.grid()
+#figP.savefig('section2D.png')
 #============================
 #NEXT: sectionate the 2D cut into pixels with density data and CM velocity.
 #============================
 #2D densitiy 
-figD=plt.figure(figsize=(10,10))
-plt.hist2d(Xseg,Yseg,bins=30)
-plt.xlabel("X Axis")
-plt.ylabel("Y Axis")
-plt.title("Density of 2D Cut in Z axis ", fontsize=20)
-figD.savefig("Density2D-30b.png")
+#figD=plt.figure(figsize=(10,10))
+#plt.hist2d(Xseg,Yseg,bins=30)
+#plt.xlabel("X Axis")
+#plt.ylabel("Y Axis")
+#plt.title("Density of 2D Cut in Z axis ", fontsize=20)
+#figD.savefig("Density2D-30b.png")
 #============================
 #density map
 #datosD=np.Vstack([Xseg,Yseg])
@@ -94,3 +94,40 @@ figD.savefig("Density2D-30b.png")
 #figDD.savefig('DensitiyGauss.png')
 #doesnt work ,gaussian density
 #============================================
+#PIXEL BY PIXEL VELOCITY
+Arrows=[]
+
+for x in range (40):
+    for y in range (40):
+        rvx=0
+        rvy=0
+        for i in range (len(Xseg)):
+            Cordx=Xseg[i]
+            Cordy=Yseg[i]
+            
+            rx=x*30
+            ry=y*30
+            if((Cordx>rx)&(Cordx<(rx+30))&(Cordy>ry)&(Cordy<(ry+30))):
+                 rvx=rvx+Vxseg[i]
+                 rvy=rvy+Vyseg[i]
+        angle=0
+        if(rvx!=0):
+            angle=np.arctan(rvy/rvx)
+        else:
+            angle=np.pi/2
+        arrx=np.cos(angle)*5
+        arry=np.sin(angle)*5
+        k=[rx+15,ry+15,arrx,arry]
+        Arrows.append(k)
+        
+#==========================================              
+plt.figure(figsize=(10,10))
+axARR=plt.axes()
+
+for elem in Arrows:
+    xi=elem[0]
+    yi=elem[1]
+    xf=elem[2]
+    yf=elem[3]
+    axARR.arrow(xi,yi,xf,yf,head_width=0.01,head_length=0.1,fc='k',ec='k')
+plt.savefig('arrows.png')
