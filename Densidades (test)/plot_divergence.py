@@ -47,8 +47,8 @@ for i in range (n_side):
         
         tmp_vx = VX[ii]
         tmp_vy = VY[ii]
-        tmp_m = MASS[ii]
-        vx_grid[i,j] = np.sum(tmp_m * tmp_vx) / np.sum(tmp_m)
+        tmp_m = MASS[ii] + 1E-10
+        vx_grid[i,j] = np.sum(tmp_m * tmp_vx) / np.sum(tmp_m) 
         vy_grid[i,j] = np.sum(tmp_m * tmp_vy) / np.sum(tmp_m)
 
         
@@ -59,54 +59,24 @@ def definir_divergencia(vxg,vyg):
     vxg[where_are_NaNs] = 0
     where_are_NaNs = np.isnan(vyg)
     vyg[where_are_NaNs] = 0
-    for i in range(n_side):
-        for j in range(n_side):
-            #correcciones para condiciones periodicas
-            i_A=i-1
-            i_B=i+1
-            j_A=i-1
-            j_B=j+1
-            if(i_A<0):
-                i_A=n_side-1
-            if(j_A<0):
-                j_A=n_side-1
-            if(j_B==(n_side)):
-                j_B=0
-            if(i_B==(n_side)):
-                i_B=0
-        #Divergencia=flujo entrante-flujo saliente
-        #Div<0 saliente; Div>0 entrante
-           
-            #flujo
-            F_x=(vxg[i,j_A]-vxg[i,j_B])-np.abs(vxg[i,j])
-            F_y=(vyg[i_B,j]-vyg[i_A,j])-np.abs(vyg[i,j])
-            
-            
-            if(((vxg[i_A,j_A]>0) & (vyg[i_A,j_A]<0))|((vxg[i_A,j_A]<0) & (vyg[i_A,j_A]>0))):
-                F_x+=vxg[i_A,j_A]
-                F_y-=vyg[i_A,j_A]            
-            if(((vxg[i_A,j_B]>0) & (vyg[i_A,j_B]<0))|((vxg[i_A,j_B]<0) & (vyg[i_A,j_B]>0))):
-                F_x-=vxg[i_A,j_A]
-                F_y-=vyg[i_A,j_A]
-            if(((vxg[i_B,j_A]>0) & (vyg[i_B,j_A]<0))|((vxg[i_B,j_A]<0) & (vyg[i_B,j_A]>0))):
-                F_x+=vxg[i_A,j_A]
-                F_y+=vyg[i_A,j_A]
-            if(((vxg[i_B,j_B]>0) & (vyg[i_B,j_B]<0))|((vxg[i_B,j_B]<0) & (vyg[i_B,j_B]>0))):
-                F_x-=vxg[i_A,j_A]
-                F_y+=vyg[i_A,j_A]
-                
-                
-                
-            
-                
-        
-            
-        
-            div[i,j]=F_x+F_y
+    div[1:-1,1:-1] = (vxg[:-2,1:-1] - vxg[2:,1:-1]) + (vyg[1:-1,:-2] - vyg[1:-1,2:])
     return div
 #========================================================00
 Divergencia=definir_divergencia(vx_grid,vy_grid)
 divplot=plt.figure(figsize=(10,10))
-plt.imshow(Divergencia)
+plt.imshow(Divergencia.T)
+
+axARR=plt.axes()
+Vmin=110
+for i in range(n_side):
+    for j in range(n_side):
+        print('plot', i,j)
+        xi = i 
+        yi = j 
+        v_div=200
+        xf = vx_grid[i,j]/v_div
+        yf = vy_grid[i,j]/v_div
+        axARR.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
+        
 
 divplot.savefig('divergenciaOD.png')
