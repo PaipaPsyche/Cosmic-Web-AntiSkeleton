@@ -32,8 +32,8 @@ X, Y, Z,VX, VY, VZ, MASS = segregar_corte_z(dataX, dataY, dataZ, dataVx, dataVy,
 L_box  = 1200
 n_side = 120
 l_side = L_box/n_side
-vx_grid = np.ones([n_side, n_side])
-vy_grid = np.ones([n_side, n_side])
+vx_grid = np.zeros([n_side, n_side])
+vy_grid = np.zeros([n_side, n_side])
 
 
 
@@ -47,18 +47,15 @@ for i in range (n_side):
         
         tmp_vx = VX[ii]
         tmp_vy = VY[ii]
-        tmp_m = MASS[ii] + 1E-10
-        vx_grid[i,j] = np.sum(tmp_m * tmp_vx) / np.sum(tmp_m) 
-        vy_grid[i,j] = np.sum(tmp_m * tmp_vy) / np.sum(tmp_m)
+        tmp_m = MASS[ii] 
+        masa_total = np.sum(tmp_m) + 1E-10
+        vx_grid[i,j] = np.sum(tmp_m * tmp_vx) / masa_total
+        vy_grid[i,j] = np.sum(tmp_m * tmp_vy) / masa_total
 
         
 #==========================================
 def definir_divergencia(vxg,vyg):
     div=np.zeros([n_side,n_side])
-    where_are_NaNs = np.isnan(vxg)
-    vxg[where_are_NaNs] = 0
-    where_are_NaNs = np.isnan(vyg)
-    vyg[where_are_NaNs] = 0
     div[1:-1,1:-1] = (vxg[:-2,1:-1] - vxg[2:,1:-1]) + (vyg[1:-1,:-2] - vyg[1:-1,2:])
     return div
 #========================================================00
