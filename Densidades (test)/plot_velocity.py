@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 #from scipy.stats import gaussian_kde
 
 #Data Loading========
-data1 = np.loadtxt("Halo1.txt", skiprows=8)
+data1 = np.loadtxt("Halo.txt")
 data1=np.transpose(data1)
 
 dataX=data1[0]
@@ -24,7 +23,7 @@ def segregar_corte_z(x, y, z, vx, vy, vz, mass, minz, dz):
 X, Y, Z,VX, VY, VZ, MASS = segregar_corte_z(dataX, dataY, dataZ, dataVx, dataVy, dataVz, dataM, 80,10)
 
 L_box  = 1200
-n_side = 100
+n_side = 120
 l_side = L_box/n_side
 vx_grid = np.ones([n_side, n_side])
 vy_grid = np.ones([n_side, n_side])
@@ -64,43 +63,6 @@ def dar_puntos_quietos(vxg,vyg,dv):
     return pc
 
 
-def definir_divergencia(vxg,vyg):
-    div=np.zeros([n_side,n_side])
-    where_are_NaNs = np.isnan(vxg)
-    vxg[where_are_NaNs] = 0
-    where_are_NaNs = np.isnan(vyg)
-    vyg[where_are_NaNs] = 0
-    for i in range(n_side):
-        for j in range(n_side):
-            #correcciones para condiciones periodicas
-            i_A=i-1
-            i_B=i+1
-            j_A=i-1
-            j_B=j+1
-            if(i_A<0):
-                i_A=n_side-1
-            if(j_A<0):
-                j_A=n_side-1
-            if(j_B==(n_side)):
-                j_B=0
-            if(i_B==(n_side)):
-                i_B=0
-        #Divergencia=flujo entrante-flujo saliente
-        #Div<0 saliente; Div>0 entrante
-            ax=vxg[i,j_A]
-            bx=vxg[i,j_B]
-            ay=vyg[i_A,j]
-            by=vyg[i_B,j]
-            vx=vxg[i,j]
-            vy=vyg[i,j]
-            #flujo
-            F_x=(ax-bx)-np.abs(vx)
-            F_y=(by-ay)-np.abs(vy)
-            
-        
-            div[i,j]=F_x+F_y
-    return div
-        
         
             
                 
@@ -123,8 +85,5 @@ plt.xlim([0,1200])
 plt.ylim([0,1200])
 plt.savefig('arrowspoints.png')   
  
-Divergencia=definir_divergencia(vx_grid,vy_grid)
-plt.figure(figsize=(10,10))
-plt.matshow(Divergencia)
-plt.savefig('divergencia.png')
+
 
