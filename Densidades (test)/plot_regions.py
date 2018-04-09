@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr  6 13:06:41 2018
+Created on Mon Apr  9 17:41:20 2018
 
 @author: David
 """
@@ -8,9 +8,6 @@ Created on Fri Apr  6 13:06:41 2018
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.convolution import Gaussian2DKernel,convolve
-
-
-
 
 #Data Loading========
 data1 = np.loadtxt("Halo.txt")
@@ -74,38 +71,20 @@ def puntos_criticos(div,Vmax,Vmin):
     PuntosC[ii]=-1
     PuntosC[jj]=1
     return PuntosC
-
-
-    
-#========================================================00
 Divergencia=definir_divergencia(vx_grid,vy_grid)
-divplot=plt.figure(figsize=(10,10))
-plt.imshow(Divergencia.T)
-
-axARR=plt.axes()
 Dlim=220
 Dmin=Dlim
 Dmax=Dlim
 PC=puntos_criticos(Divergencia,Dmax,Dmin)
 
-for i in range(n_side):
-    print('plot ',i)
-    for j in range(n_side):
-        
-        xi = i 
-        yi = j 
-        v_div=200
-        xf = vx_grid[i,j]/v_div
-        yf = vy_grid[i,j]/v_div
-        axARR.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
-        
 
-divplot.savefig('divergenciaOD.png')
+#====================
 
 
-CPplot=plt.figure(figsize=(10,10))
-axPC=plt.axes()
-plt.imshow(PC.T)
+new=convolve(PC,gauss,boundary='extend')
+Gplot=plt.figure(figsize=(10,10))
+axGp=plt.axes()
+plt.imshow(new.T)
 for i in range(n_side):
     for j in range(n_side):
         xi = i 
@@ -113,14 +92,36 @@ for i in range(n_side):
         v_div=200
         xf = vx_grid[i,j]/v_div
         yf = vy_grid[i,j]/v_div
-        axPC.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
+        axGp.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
 
+plt.savefig("gauss.png")
+#=======================================
+Gmin=np.amin(new)
+Gmax=np.max(new)
+L=Gmax-Gmin
+thresh=0.5
 
-
-CPplot.savefig("PuntosCriticos.png")
-gauss=Gaussian2DKernel(3)
+TH=thresh*L+Gmin
+def definir_Regiones(gauss,threshold):
+    reg=np.zeros([n_side,n_side])
     
-    
-
-
+    ii=(gauss>=threshold)
+    jj=(gauss<threshold)
+    reg[ii]=1
+    reg[jj]=-1
+    return reg
+REG=definir_Regiones(new,TH)
+#=======================================
+Rplot=plt.figure(figsize=(10,10))
+axRp=plt.axes()
+plt.imshow(REG.T)
+for i in range(n_side):
+    for j in range(n_side):
+        xi = i 
+        yi = j 
+        v_div=200
+        xf = vx_grid[i,j]/v_div
+        yf = vy_grid[i,j]/v_div
+        axRp.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
+plt.savefig('Regiones.png')
 
