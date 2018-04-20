@@ -33,7 +33,7 @@ def segregar_corte_z(x, y, z, vx, vy, vz, mass, minz, dz):
 X, Y, Z,VX, VY, VZ, MASS = segregar_corte_z(dataX, dataY, dataZ, dataVx, dataVy, dataVz, dataM, 80,10)
 
 L_box  = 1200
-n_side = 100
+n_side = 150
 l_side = L_box/n_side
 vx_grid = np.zeros([n_side, n_side])
 vy_grid = np.zeros([n_side, n_side])
@@ -80,6 +80,7 @@ PC=puntos_criticos(Divergencia,Dmax,Dmin)
 
 #====================
 
+gauss=Gaussian2DKernel(1.5)
 
 new=convolve(PC,gauss,boundary='extend')
 Gplot=plt.figure(figsize=(10,10))
@@ -95,6 +96,30 @@ for i in range(n_side):
         axGp.arrow(xi,yi,xf,yf,head_width=0.5,head_length=0.1,fc='k',ec='k', alpha=0.5 )
 
 plt.savefig("gauss.png")
+
+fileGauss=open("ScalarGauss.txt","w")
+for i in range (n_side):
+    for j in range (n_side):
+        fileGauss.write(str(new[i,j])+" ")
+    fileGauss.write("\n")
+fileGauss.close()
+
+fileVX=open("VectorVx.txt","w")
+for i in range (n_side):
+    for j in range (n_side):
+        fileVX.write(str(vx_grid[i,j])+" ")
+    fileVX.write("\n")
+fileVX.close()
+
+fileVY=open("VectorVy.txt","w")
+for i in range (n_side):
+    for j in range (n_side):
+        fileVY.write(str(vy_grid[i,j])+" ")
+    fileVY.write("\n")
+fileVY.close()
+
+
+        
 #=======================================
 Gmin=np.amin(new)
 Gmax=np.max(new)
