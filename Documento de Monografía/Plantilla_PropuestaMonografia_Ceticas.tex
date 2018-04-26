@@ -1,0 +1,193 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+
+%\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage[T1]{fontenc} 
+
+\usepackage{hyperref}
+\usepackage[left=3cm,top=3cm,right=3cm,nohead,nofoot]{geometry}
+\usepackage{braket}
+\usepackage{datenumber}
+%\newdate{date}{10}{05}{2013}
+%\date{\displaydate{date}}
+
+\begin{document}
+
+\begin{center}
+\Huge
+Algoritmo buscador de supercúmulos en simulaciones cosmológicas 
+
+\vspace{3mm}
+\Large David Leonardo Paipa León
+
+
+\large
+201516988
+
+
+\vspace{2mm}
+\Large
+Director: Jaime Ernesto Forero
+
+\normalsize
+\vspace{2mm}
+
+\today
+\end{center}
+
+
+\normalsize
+\section{Introducción}
+
+%Introducci�n a la propuesta de Monograf�a. Debe incluir un breve resumen del estado del arte del problema a tratar. Tambi�n deben aparecer citadas todas las referencias de la bibliograf�a (a menos de que se citen m�s adelante, en los objetivos o metodolog�a, por ejemplo)
+
+En 1932 Harlow Shapley y Adelaide Ames publican un catálogo de galaxias cercanas y sus respectivas distribuciones en el espacio. esto reveló que, a pesar de que se esperaba que el universo a escala cosmológica fuera homogéneo e isótropo,  se presentaban agrupaciones inusuales de galaxias a gran escala. Hasta entonces se tenía conocimiento de galaxias agrupadas en grupos pequeños, llamados cúmulos , pero las observaciones sugerían que estos formaban parte de estructuras más grandes compuestas de varios de estos cúmulos.  
+
+
+Las observaciones astronómicas realizadas al rededor del mundo en el último siglo sugieren que las galaxias no están distribuidas de manera uniforme a lo largo de todo el universo, sino que por el contrario tienden a agruparse en estos supercúmulos y filamentos. Estos pueden contener desde docenas de galaxias hasta varios miles, todas agrupadas por efecto de la gravedad que ejercen entre ellas. \\
+
+A pesar de que la astronomía moderna ha avanzado bastante en el estudio de los supercúmulos galácticos, aún se desconoce mucho sobre cómo se forman o por qué se distribuyen en filamentos y no de manera uniforme en el universo. Para resolver algunas incognitas en este tópico es necesario ir más allá de la observación y las especulaciones, y comenzar a implementar simulaciones.\\
+
+
+Un área de interés en la astrofísica computacional es la simulación de N-Cuerpos con interacción gravitacional y observar su comportamiento en semejanza con la estructura a gran escala de nuestro vecindario galáctico. Por ejemplo, Hernandez en su trabajo de monografía\cite{Hernandez} expone como este tipo de simulaciones ayudan a determinar la significancia de nuestro supercúmulo local Laniakea  en un cotexto cosmológico.Sus resultados apuntan a que los supercúmulos similares en tamaño  y estructura a Laniakea son relativamente raros.\\
+
+A partir de estas simulaciones se puede establecer una relación fuerte entre el campo de velocidades de la simulación y el flujo de material como lo siguiere Hernandez . Esto le da a los investigadores indicios de cómo se forman los cúmulos y de cómo se ven estas estructuras a escala cosmoógica. Usualmente en estas simulaciones se toman en cuenta escenarios con masas variables y con condiciones iniciales aleatorias sin favorecer ninguna región del espacio en particular.
+
+\section{Objetivo General}
+
+%Objetivo general del trabajo. Empieza con un verbo en infinitivo.
+
+Crear un algoritmo capaz de interpretar simulaciones de N-Cuerpos en 3D  y reconocer conjuntos de masa que eventualmente colapsaran al mismo punto, segregando así diferentes supercúmulos. 
+
+
+\section{Objetivos Específicos}
+
+%Objetivos espec�ficos del trabajo. Empiezan con un verbo en infinitivo.
+
+\begin{itemize}
+	\item Crear códigos de prueba en python para experientar el manejo de grandes cantidades de datos y su respectivo análisis
+	\item Crear algoritmos de prueba en Python capaces de localizar puntos críticos de densidad en simulaciones y segregar regiones asignadas a diferentes supercúmulos.
+	\item Implementar lo aprendido en un algoritmo en C capaz de analizar una simulación y segregar supercúmulos diferentes.
+	\item Depurar el código en C e implementarlo en diferentes escenarios para asegurar así un buen desempeño.
+\end{itemize}
+
+\section{Metodología}
+
+%Exponer DETALLADAMENTE la metodolog�a que se usar� en la Monograf�a. 
+%Monograf�a te�rica o computacional: �C�mo se har�n los c�lculos te�ricos? �C�mo se har�n las simulaciones? �Qu� requerimientos computacionales se necesitan? �Qu� espacios f�sicos o virtuales se van a utilizar?
+\subsection{Implementación teórica en el algoritmo}
+Al hacer los algoritmos se asume que en las simulaciones \cite{simulations} se tratan masas de movimiento libre bajo interacción gravitacional, pero no se tienen en cuenta las caracteríscticas físicas de estos objetos. Es decir, no se toma en cuenta ningun otro tipo de interacción más que la gravitación entre dos elementos distintos. 
+Tampoco se toman en cuenta unidades de medida de velocidad o masa, sino proporcionalidad entre estos .La interacción gravitacional entre dos cuerpos debe venir dada por leyes de la forma:
+\begin{equation}
+F= K \frac{m_1 m_2}{r^2}
+\end{equation}
+Es decir, la fuerza de interacción debe ser proporcional a las dos masas y al inverso del cuadrado de la distancia entre las dos. De igual forma, en el algoritmo para calcular ciertos flujos no se toma en cuenta proporcionalidad con ninguna constante ni unidades de medida.\\
+
+En lo que concierne al algoritmo como tal, se dividirá el espacio en cubos de material y se tratarán las velocidades de los centros de masa de cada \textit{pixel}. El cálculo de la velocidad del centro de masa para cada pixel viene dada por:
+\begin{equation}
+V_{CM}=\frac{\sum_{i=1}^n m_i \textbf{v}_i}{\sum_{i=1}^n m_i} 
+\end{equation}
+Donde \textit{n} es el numero de elementos dentro del pixel, \textit{m} la masa de cada elemento i y \textit{v} la velocidad de este.
+Así se obtiene un nuevo mapa vectorial en el espacio con las velocidades del centro de masa. Ahora para obtener un mapa de densidad se toma en cuenta el flujo de material entrante o saliente de cada pixel con volumen fijo. De manera intuitiva tomndo en cuenta que mayores concentraciones de masa atraen más otros elementos se propone que el mapa de densidad viene dado por:
+\begin{equation}
+\textbf{V}=\nabla \rho
+\end{equation}
+con $\nabla \rho$ siendo el gradiente de densidad en determinada posición en donde la velocidad del material es \textbf{V}.  Definir así la densidad es algo que ya se ha hecho, usualmente en busquedas de este tipo por investigadores como Sousbie \cite{FullyConn} y Novikov \cite{probe2d}. Para construir el mapa escalar de densidad de flujo , a cada pixel en la posición $(i,j,k)$ se le asigna un escalar de fujo:
+\begin{equation}
+\Phi_{i,j,k}=Vx_{i-1,j,k}-Vx_{i+1,j,k}+Vy_{i,j-1,k}-Vy_{i,j+1,k}+Vz_{i,j,k-1}-Vz_{i,j,k+1}
+\end{equation}
+Donde $Vx$ , $Vy$ y $Vz$ son las velocidades en X, Y y Z respectivamente de determinado pixel. Notar que este coeficiente  es mayor si las velocidades de los vecinos inmediatos del pixel en cuestion son entrantes. Después, se usa el algoritmo de Watershed \cite{WaterBeuch} \cite{SegmBeuch} para determinar los máximos o mínimos locales en donde el material está \textit{entrando} o \textit{saliendo} respectivamente . Se van a reconocer todos los pixeles que pertenecen a un mismo supercúmulos haciendo un mapeo iterativo a partir del punto crítico, primiero mirando los vecinos inmediatos al punto crítico y depués los vecinos inmediatos de esos pixeles, para asignar a esa región los pixeles con flujos que eventualmente convergeran a este punto. Gran parte de este metodo recae en la experimentación y en determinar cual es la mejor forma de reconocer estos \textit{caminos} que convergen al mismo punto.
+\subsection{Manejo de datos y Herramientas}
+Se usan datos de simulaciones de N-Cuerpos \cite{simulations} en tiempos avanzados\footnote{Tiempos avanzados de simulación garantizan que el sistema ha tenido suficiente tiempo para desarrollarse y poder notar tendencia de acumulación de masa en ciertas regiones.} y con condiciones de frontera periódicas para analizar posteriormente las respectivas velocidades.Para hacer pruebas iniciales de funcionamiento de algoritmos y visualización de datos en 2 dimensiones se usará Python 3.6 inicialmente, pues es amigable con el usuario y es más fácil detectar fallas. Eventualmente se pasará el desarrollo del algoritmo a C para tratar cantidades de datos más grandes y se seguirá usando Python con el fin de visualizar datos, pero no para procesarlos. El control de versiones se hará con Github\footnote{El repositorio con el código usado en la monografía es \url{https://github.com/PaipaPsyche/Cosmic-Web-AntiSkeleton}}.\\
+
+
+
+
+\section{Consideraciones \'Eticas}
+
+Puesto que la monografía va a ser enteramente computacional, no es necesario que el proyecto sea estudiado por el comité de ética de la Facultad de Ciencias.El código que se usará y del cual saldrán los resultados es código nuevo, no obstante, las simulaciones son descargadas de un sitio público\cite{simulations}. En ocasiones se habrán de citar resultados obtenidos por el estudiante Sergio Hernandez en su monografía\cite{Hernandez}.
+
+%A partir del periodo 2017-20 debe incluirse en el formato de propuesta de monografía una sección titulada Consideraciones éticas. Esta sección debe incluir los detalles relacionados con aspectos éticos involucrados en el proyecto. Por ejemplo, se puede describir el protocolo establecido para el manejo de datos de manera que se asegure que no habrá manipulación de la información, ni habrá plagio de los mismos. También se puede tener en cuenta si hay algún conflicto de intereses involucrado en el desarrollo del proyecto o se puede detallar si el trabajo está relacionado con las actividades y poblaciones humanas mencionadas en el siguiente link https://ciencias.uniandes.edu.co/investigacion/comite-de-etica. Es importante tener en cuenta que esta sección debe incluir una frase explícita sobre si el proyecto debe pasar o no a estudio del comité de ética de la Facultad de Ciencias.
+
+
+\section{Cronograma}
+
+\begin{table}[htb]
+	\begin{tabular}{|c|cccccccccccccccc| }
+	\hline
+	Tareas $\backslash$ Semanas & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16  \\
+	\hline
+	1 & X & X &   &    &   &   &   &   &   &   &   &   &   &   &   &   \\
+	2 &   &   & X &  X & X &   &   &   &   &   &   &   &   &   &   &   \\
+	3 &   &   &   &    & X &  X &  &  &   &   &   &   &   &   &   &   \\
+	4 &   &   &   &    &   &   X & X & X & X & X &   &   &   &   &   &   \\
+    5 &   &   &   &    &   &     &   & X &   &   &   &   &   &   &   &   \\
+	6 &   &   &   &   &  &   &   &   &  &   &  X & X &   &   &  &   \\
+    7 & X  &  X &   &   &  &   &   &   &   &   &   &  X&  X &  X &  X&   \\
+	\hline
+	\end{tabular}
+\end{table}
+\vspace{1mm}
+
+\begin{itemize}
+	\item Tarea 1: Implementar un algoritmo de prueba en python para segregar  supercúmulos en 3D.
+	\item Tarea 2: Crear códigos de prueba en C para leer, analizar y segmentar grandes cantidades de datos de simulaciones.
+    
+	\item Tarea 3: Implementar un algorimo de búsqueda de puntos críticos de densidad en simulaciones 3D en C.
+	\item Tarea 4: Hacer un algoritmo en C capaz de segregar supercúmulos en 3D.
+    \item Tarea 5: Presentar aavances correspondientes al 30\%
+    \item Tarea 6: Realizar pruebas en diferentes simulaciones para verificar desempeño.
+    \item Tarea 7: Escribir el documento de monografía.
+    
+    
+\end{itemize}
+
+\section{Personas Conocedoras del Tema}
+
+%Nombres de por lo menos 3 profesores que conozcan del tema. Uno de ellos debe ser profesor de planta de la Universidad de los Andes.
+
+\begin{itemize}
+	\item Jaime Ernesto Forero Romero(Universidad de los Andes)
+	\item Benjamin Oostra Van Noppen(Universidad de los Andes)
+	\item Alejandro García Varela(Universidad de los Andes)
+    \item Juan Carlos Sanabria Arenas(Universidad de los Andes)
+\end{itemize}
+
+
+\begin{thebibliography}{10}
+
+%\bibitem{Jerry} J. Banks. \textit{Discrete-Event System Simulation}. Fourth Edition. Prentice Hall International Series in Industrial and Systems Engineering, pg 86 - 116 y 219 - 235, (2005).
+\bibitem{WaterBeuch} S. Beucher \& C. Lantuejoul. \textit{Use of Watersheds in contour detection}.(1979) 
+\bibitem{SegmBeuch} S. Beucher. \textit{The watershed transformation applied to image segmentation}.
+
+\bibitem{Hernandez} S. Hernandez.\textit{Laniakea in a Cosmological Context or Detection of galaxy superclusters in simulated cosmological structures}, pg 5 , (2016).
+
+\bibitem{probe2d} D. Novikov, S. Colombi \& O. Doré. \textit{Skeleton as a probe of the cosmic web: the two-dimensional case}, \textbf{1}(2005).
+
+\bibitem{Persistent} T. Sousbie. \textit{The persistent cosmic web and its filamentary structure I: Theory and implementation}, \textbf{1}(2010).
+
+\bibitem{FullyConn} T. Sousbie, S. Colombi \& C. Pichon. \textit{The fully connected N dimensional Skeleton: probing the evolution of the cosmic web}, \textbf{1}(2018).
+\bibitem{simulations} Índice de SUSimulations . Simulaciones obtenidas de \textit{ftp://skun.iaa.es/SUsimulations/C1.2/HALOLISTS/}, Consultado el 24 de Abril de 2018.
+
+%\bibitem{LabInt} P. D�az \& N. Barbosa: \textit{Obtenci�n de n�meros aleatorios}. Informe final del curso Laboratorio Intermedio. Universidad de Los Andes, Bogot�, Colombia, (2012).
+
+
+
+\end{thebibliography}
+
+\section*{Firma del Director}
+\vspace{1.5cm}
+
+\section*{Firma del Codirector	}
+
+
+
+
+
+\end{document} 
