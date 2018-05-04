@@ -55,18 +55,36 @@ Hasta entonces se tenía conocimiento de galaxias agrupadas en grupos
 pequeños, llamados cúmulos ,  pero las observaciones sugerían que estos formaban parte de estructuras
 compuestas de varios de estos cúmulos. 
 Casi un siglo despu\'es observadores lograron definir un 
-el supercúmulo local dentro del cual se incluye la Vía Láctea. 
-Fue definido así por Tully \cite{tully} cuando se refiere a un
-supercúmulo como una red de estructuras (formadas por galaxias)
-interconectadas sin límites definidos.
-Cuenta con un radio aproximado
-de 160 Mpc y la masa de cerca de $10^{17}$ soles según un artículo publicado por la revista
-Nature\cite{nature}.\\  
-%Según resultados computacionales obtenidos por Hernandez \cite{Hernandez} los supercúmulos similares en estructura y tamaño a Laniakea son relativamente raros, lo cual le da significancia en un contexto cosmológico.\\
+el supercúmulo local dentro del cual se incluye la Vía Láctea \cite{tully}. 
+Este supercúmulo se define como una red de estructuras (formadas por galaxias)
+que tienen velocidades convergentes hacia un gran atractor.
+Este superc\'umlo recibe el nombre Laniakea y cuenta con un radio
+aproximado de 160 Mpc y la masa de cerca de $10^{17}$ soles
+\cite{nature}.
 
-A pesar de que la astronomía moderna ha avanzado bastante en el estudio de los supercúmulos galácticos, aún se desconoce mucho sobre las propiedades estadísticas de estos supercúmulos. Para resolver algunas incognitas en este tópico es necesario ir más allá de la observación y las especulaciones, y comenzar a implementar simulaciones.\\
+A pesar de que la astronomía moderna ha avanzado bastante en el
+estudio de cúmulos de galaxias, aún se desconoce mucho sobre las
+propiedades estadísticas de estos supercúmulos. 
+Para resolver
+algunas incognitas en este tópico es necesario utilizar simulaciones.
 
-Para caracterizar supercúmulos se pueden usar simulaciones de N-Cuerpos con interacción gravitacional y observar su comportamiento en semejanza con la estructura a gran escala de nuestro vecindario galáctico usando las velocidades de los cuerpos en cada simulación. A partir de encontrar supercúmulos en estas simulaciones se pueden estudiar las propiedades estadísiticas de estos. Para hallar los supercúmulos se buscan puntos en donde la convergencia de las velocidades es alta, pues en estos puntos el material tiende a concentrarse. Después, partiendo de cada uno de estos puntos se busca material vecino con velocidad convergente a este, y así sucesivamente hasta agrupar todos los elementos que pertenecen a cada supercúmulo.
+El objetivo de esta tesis es encontrar y caracterizar supercúmulos en
+simulaciones cosmol\'ogicas.
+Para hallar los supercúmulos buscaremos regiones en donde l\'ineas de
+flujo de galaxias converjan.
+Buscamos segmentar el volumen completo de la simulaci\'on para
+asignarle pertenencia a cada galaxia simulada a un superc\'umulo
+determinado. 
+Este trabajo es una continuaci\'on directa del trabajo de Sergio
+Hern\'andez quien implement\'o un algoritmo muy aproximado para 
+encontrar superc\'umulos \cite{Hernandez}. 
+La limitaci\'on de ese trabajo es que no era una segmentaci\'on del
+volumen total y subestimaba el volumen y masa de los superc\'umulos.
+La novedad de nuestra tesis es que implementaremos un seguimiento
+detallado de los flujos de velocidades para lograr un mayor realismo
+con respecto a los procedimientos utilizados para encontrar a Laniakea
+en las observaciones.
+
 
 \section{Objetivo General}
 
@@ -82,7 +100,7 @@ Crear un algoritmo para encontrar supercúmulos en simulaciones de universo a gr
 \begin{itemize}
 	\item Implementar un algoritmo en C que pueda buscar supercúmulos en simulaciones.
 	\item Aplicar el algoritmo a simulaciones cosmológicas.
-	\item Catracterizar los supercúmulos encontrados con el algoritmo.
+	\item Caracterizar los supercúmulos encontrados con el algoritmo.
 \end{itemize}
 
 \section{Metodología}
@@ -90,7 +108,10 @@ Crear un algoritmo para encontrar supercúmulos en simulaciones de universo a gr
 %Exponer DETALLADAMENTE la metodolog�a que se usar� en la Monograf�a. 
 %Monograf�a te�rica o computacional: �C�mo se har�n los c�lculos te�ricos? �C�mo se har�n las simulaciones? �Qu� requerimientos computacionales se necesitan? �Qu� espacios f�sicos o virtuales se van a utilizar?
 \subsection{Implementación teórica en el algoritmo}
-Dada una simulación de N-cuerpos con datos de posición, velocidad y masa en 3 Dimensiones, se dividirá el espacio en una grilla con el fin de hallar la velocidad de cada voxel . El cálculo de la velocidad del centro de masa para cada voxel viene dada por:
+Dada una simulación de N-cuerpos con datos de posición, velocidad y
+masa en 3 Dimensiones, se dividirá el espacio en una grilla con el fin
+de hallar la velocidad de cada voxel . El cálculo de la velocidad del
+centro de masa para cada voxel viene dada por: 
 \begin{equation}
 V_{CM}=\frac{\sum_{i=1}^n m_i \textbf{v}_i}{\sum_{i=1}^n m_i} 
 \end{equation}
@@ -105,13 +126,21 @@ Donde $Vx$ , $Vy$ y $Vz$ son las velocidades en X, Y y Z respectivamente de dete
 \subsection{Manejo de datos y Herramientas}
 
 %Se usan datos de simulaciones de N-Cuerpos \cite{simulations} que estan disponibles públicamente .Para hacer pruebas iniciales de funcionamiento de algoritmos y visualización de datos en 2 dimensiones actualmente se usa Python, esto con el fin de hacer algoritmos de prueba que sean de ayuda en la creación del algoritmo principal\footnote{Se comparan resultados con los obtenidos por Novikov et. al. \cite{probe2d} o Sousbie\cite{Persistent} en algoritmos 2D}. Eventualmente para la monografía se pasará el desarrollo del algoritmo a C para tratar cantidades de datos más grandes y se seguirá usando Python con el fin de visualizar datos, pero no para procesarlos.
-El desarrollo de la monografía puede ser llevado a cabo desde un computador portátil, pues la complejidad de los algoritmos no requiere una gran cantidad de procesamiento.Los datos que se analizarán provienen de simulaciones públicas\cite{simulations}.
+El desarrollo de la monografía puede ser llevado a cabo desde un
+computador portátil, pues la complejidad de los algoritmos no requiere
+una gran cantidad de procesamiento.Los datos que se analizarán
+provienen de simulaciones públicas\cite{simulations}. 
+
 
 
 
 \section{Consideraciones \'Eticas}
 
-Puesto que la monografía va a ser enteramente computacional, no es necesario que el proyecto sea estudiado por el comité de ética de la Facultad de Ciencias.
+Puesto que la monografía va a ser enteramente computacional, no es
+necesario que el proyecto sea estudiado por el comité de ética de la
+Facultad de Ciencias. 
+Seguiremos las pr\'acticas adecuadas al citar el trabajo o resultados
+de otras personas que utilicemos en nuestro trabaj. 
 
 %A partir del periodo 2017-20 debe incluirse en el formato de propuesta de monografía una sección titulada Consideraciones éticas. Esta sección debe incluir los detalles relacionados con aspectos éticos involucrados en el proyecto. Por ejemplo, se puede describir el protocolo establecido para el manejo de datos de manera que se asegure que no habrá manipulación de la información, ni habrá plagio de los mismos. También se puede tener en cuenta si hay algún conflicto de intereses involucrado en el desarrollo del proyecto o se puede detallar si el trabajo está relacionado con las actividades y poblaciones humanas mencionadas en el siguiente link https://ciencias.uniandes.edu.co/investigacion/comite-de-etica. Es importante tener en cuenta que esta sección debe incluir una frase explícita sobre si el proyecto debe pasar o no a estudio del comité de ética de la Facultad de Ciencias.
 
@@ -153,10 +182,10 @@ Puesto que la monografía va a ser enteramente computacional, no es necesario qu
 %Nombres de por lo menos 3 profesores que conozcan del tema. Uno de ellos debe ser profesor de planta de la Universidad de los Andes.
 
 \begin{itemize}
-	\item Jaime Ernesto Forero Romero(Universidad de los Andes)
-	\item Benjamin Oostra Van Noppen(Universidad de los Andes)
-	\item Alejandro García Varela(Universidad de los Andes)
-    \item Juan Carlos Sanabria Arenas(Universidad de los Andes)
+	\item Jaime Ernesto Forero Romero (Universidad de los Andes)
+    \item Marcela Hern\'andez (Universidad de los Andes)
+	\item Benjamin Oostra Van Noppen (Universidad de los Andes)
+	\item Alejandro García Varela (Universidad de los Andes)
 \end{itemize}
 
 
