@@ -21,7 +21,7 @@ for(j = 0;j<TAMANO;j++){
 double x = pow((i-mid),2);
 double y = pow((j-mid),2);
 
-double new = pow((x+y),0.5f);
+double new = pow((x+y),0.5f) - 60;
 
 fprintf(out,"%lf ",new);
 

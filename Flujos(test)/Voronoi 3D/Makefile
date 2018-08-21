@@ -10,4 +10,6 @@ compile:
 	./MakingGrid
 
 clean:
-	rm parametros.txt MakingGrid
+	rm parametros.txt MakingGrid 
+cleanfinal:
+	rm grid3D.txt

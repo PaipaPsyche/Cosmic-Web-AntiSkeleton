@@ -1,4 +1,4 @@
-all: generate compile graph clean
+all: generate compile graph
 
 generate: matrix.c
 	gcc matrix.c -o matrix -lm
