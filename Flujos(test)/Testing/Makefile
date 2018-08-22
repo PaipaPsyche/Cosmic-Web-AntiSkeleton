@@ -1,4 +1,4 @@
-all: generate compile graph
+all: generate compile graph clean
 
 generate: matrix.c
 	gcc matrix.c -o matrix -lm
@@ -8,3 +8,5 @@ graph:
 	python testing.py
 clean:
 	rm TestMatrix.txt matrix
+cleanfinal:
+	rm testing.png
