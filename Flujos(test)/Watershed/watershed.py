@@ -96,7 +96,7 @@ def revisarPertenenciaVecinos(ii,jj):
     if(suma==0):
         c=elegirMasCercano(ii,jj)
 #        print("choice rand "+str(c))
-        return int(c),1
+        return c,1
     else:
         nz=[]
         for elem in vecinos:
@@ -156,8 +156,9 @@ def propagar():
                         pertenencia[i,j],cont=revisarPertenenciaVecinos(i,j)
                         total+=1
                         contador+=cont
-                        
+            
             vacios=contarPixelesNoIdentificados(cota_inf,cota_sup)
+#           print(vacios)
     return contador/total
 
     
