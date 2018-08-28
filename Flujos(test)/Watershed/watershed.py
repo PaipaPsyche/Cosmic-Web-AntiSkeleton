@@ -17,7 +17,7 @@ precoord=np.where(nodos==1)
 for i in range(n_nodos):
     x=precoord[0][i]
     y=precoord[1][i]
-    pertenencia[x,y]=i+1
+    pertenencia[x,y]=int(i+1)
 #        print(x,y,i+1)
 
 def extraccionParametros():
@@ -95,16 +95,16 @@ def revisarPertenenciaVecinos(ii,jj):
         	
     if(suma==0):
         c=elegirMasCercano(ii,jj)
-        print("choice rand "+str(c))
-        return c,1
+#        print("choice rand "+str(c))
+        return int(c),1
     else:
         nz=[]
         for elem in vecinos:
             if (elem!=0):
                 nz.append(elem)
         p=np.random.choice(nz)
-        print("choice "+str(p))
-        return p,0
+#        print("choice "+str(p))
+        return int(p),0
 #    		
 #print(revisarPertenenciaVecinos(92,132))	
 #print(elegirMasCercano(92,130))
@@ -159,52 +159,25 @@ def propagar():
                         
             vacios=contarPixelesNoIdentificados(cota_inf,cota_sup)
     return contador/total
-#        iii=(Data<=valor_max)&(Data>cota_inf)&(pertenencia==0)
-#        kk=sum(sum(iii))
-#        print("kk=",kk) 
-#        while(kk!=0):
-#            for i in range(n_side):
-#                for j in range(n_side):
-#                    if(pertenencia[i,j]==0):
-#                        pertenencia[i,j]=revisarPertenenciaVecinos(i,j)
-#            iii=(Data<=valor_max)&(Data>cota_inf)&(pertenencia==0)
-#            kk=sum(sum(iii))
-        
-perc=propagar()
-#ss=propagar()
-#print(sum(ss))
-#plt.hist(ss)
-#
-plt.figure(figsize=[12,12])
-#plt.subplot(2,1,1)
-#propagar()
-plt.imshow(pertenencia)
-#plt.subplot(2,1,2)
-#propagar()
-#plt.imshow(pertenencia)
-porcentajeAleatorio=perc*100
-plt.title("matriz de pertenencia ( "+str(porcentajeAleatorio) +" % aleatorio)")
-plt.savefig("Pertneencia.png")
 
-#def hayZero(M):
-#	r=False
-#	for line in M:
-#		for element in line:
-#			if(element==0):
-#				r=True
-#	return r
-#
-#k=0
-#while(k<(n_side**2)):
-#    k+=1
-#    print(k)
-#    propagar()					
-#		
-#		
-#
-#	
-#
-##print(a)
-##print(b)
-##print(c)
-##print(d)
+    
+perc=propagar()
+
+def printPertenencia(textname,M):
+    np.savetxt(textname,M)
+#    file=open(textname,"w")
+#    for i in range(n_side):
+#        for j in range(n_side):
+#            file.write(str(pertenencia[i,j]))
+#        print("\n")
+
+
+plt.figure(figsize=[12,12])
+
+plt.imshow(pertenencia)
+
+porcentajeAleatorio=perc*100
+plt.title("matriz de pertenencia ( "+str(porcentajeAleatorio) +" % aleatorio)", fontsize=18)
+plt.savefig("Pertenencia.png")
+
+printPertenencia("pertenencia.txt",pertenencia)
