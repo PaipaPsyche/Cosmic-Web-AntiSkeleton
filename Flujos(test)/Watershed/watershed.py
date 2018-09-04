@@ -1,24 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Datos iniciales ===================
 Data=np.loadtxt("ScalarGauss.txt")
 nodos=np.loadtxt("MaximumNodeMap.txt")
 n_nodos=len(np.where(nodos==1)[0])
 n_side=int(Data.shape[0])
-
-
 valor_max=0
-valor_min=0
-cuenta_datos=n_side*n_side
-pertenencia=np.zeros([n_side,n_side])
-
+valor_min=0 #Definiendo límites del barrido de watershed
+cuenta_datos=n_side*n_side #datos
+pertenencia=np.zeros([n_side,n_side]) #mapa de pertenecia colores
 
 precoord=np.where(nodos==1)
 for i in range(n_nodos):
     x=precoord[0][i]
     y=precoord[1][i]
-    pertenencia[x,y]=int(i+1)
-#        print(x,y,i+1)
+    pertenencia[x,y]=int(i+1)   #cargando las coordenadas de los nodos iniciales 
+
 
 def extraccionParametros():
 	maxval=0
@@ -26,34 +24,29 @@ def extraccionParametros():
 	
 	for line in Data:
 		for element in line:
-			
-			#print(element)
 			if(element>maxval):
 				maxval=element
 			if(element<minval):
 				minval=element
 		
-	return maxval,minval
+	return maxval,minval   #cargar datos valor_max , valor_min
 def printMatrix(M):
 	plt.figure(figsize=[12,12])
 	plt.imshow(M)
-	plt.savefig("printedMatrix.png")
-##printMatrix(pertenencia)			
+	plt.savefig("printedMatrix.png")#imprimir un areglo 2D
 
 
 valor_max,valor_min=extraccionParametros()
-#definirCondicionesIniciales()	
 delta=(valor_max-valor_min)/cuenta_datos
+#delta para ajustar los limites inferiores y superiores del barrido 
 barrido_watershed=np.linspace(valor_max+(2*delta),valor_min-(2*delta),int(cuenta_datos/2))
-
-#print(valor_max,valor_min,delta)
-#print(barrido_watershed)
 
 
 def sup(n):
 	return (n+1)%n_side
 def inf(n):
 	return(n-1)%n_side
+#pixeles vecinos en condiciones periódicas
 
 def elegirMasCercano(ii,jj):
     dmenor=cuenta_datos
@@ -72,6 +65,10 @@ def elegirMasCercano(ii,jj):
             
     return pertenencia[xmen,ymen]
 
+#elige la pertenencia del pixel mas cercano
+#Solo lo uso provisionalmente para watershed cuando no se tiene una solucion
+#por pixeles vecinos
+
 
 def revisarPertenenciaVecinos(ii,jj):
 
@@ -84,18 +81,22 @@ def revisarPertenenciaVecinos(ii,jj):
     arr=pertenencia[i_a,jj]
     abb=pertenencia[i_b,jj]
     izq=pertenencia[ii,j_a]
-    der=pertenencia[ii,j_b]
+    der=pertenencia[ii,j_b]    
+#pixeles vecinos
+    
+    
     vecinos.append(arr)
     vecinos.append(abb)
     vecinos.append(izq)
     vecinos.append(der)
-#    print(arr,abb,izq,der)
+
     suma=arr+abb+izq+der
-#    print(suma)
+#    al menos un vecino tiene pertenencia definida
         	
     if(suma==0):
         c=elegirMasCercano(ii,jj)
-#        print("choice rand "+str(c))
+#   si no hay vecinos con pertenencia definida, elige la pertenencia del 
+        #nodo mas cercano
         return c,1
     else:
         nz=[]
@@ -103,11 +104,13 @@ def revisarPertenenciaVecinos(ii,jj):
             if (elem!=0):
                 nz.append(elem)
         p=np.random.choice(nz)
-#        print("choice "+str(p))
         return int(p),0
-#    		
-#print(revisarPertenenciaVecinos(92,132))	
-#print(elegirMasCercano(92,130))
+    
+    
+#retorna la pertenencia del pixel evaluado y 
+#retorna  1 si tomo una desicion aleatoria
+        # 0 si tomó una desición basada en los vecinos
+
 
 #	===============================================
 # PRIMER INTENTO PROPAGAR
@@ -133,23 +136,31 @@ def revisarPertenenciaVecinos(ii,jj):
 def contarPixelesNoIdentificados(cinf,csup):
     iii=(Data>cinf)&(Data<=csup)&(pertenencia==0)
     return (sum(sum(iii)))
+#cuenta los pixeles sin asignar
 
 
-
+#Propagar las manchas, el plano de watershed recorre todo el mapa 
+#Gaussiano de el nivel máximo al nivel mínimo propagando la pertenencia
+#de los nodos. para cada intervalo, intenta coloear los pixeles segun sus vecinos
+#no obstante, cuando el pixel no tiene vecinos con pertenencia definida, se le
+#asigna la del nodo más cercano
+#
+#
 def propagar():
-    total=0
-    contador=0
+    total=0  #total de decisiones tomadas
+    contador=0 #contador veces que se tomo una desición aleatoria
     cota_inf=0
     cota_sup=0
+    #cotas inferior y superior para seccion transversal por watershed
     for nivel in range(len(barrido_watershed)-1):
         if(nivel%600==0):
-            print("=======================   "+str(int(nivel*100/(len(barrido_watershed)-1)))+"%   ============================")
+            print(str(int(nivel*100/(len(barrido_watershed)-1)))+"%")
         cota_sup=barrido_watershed[nivel]
         cota_inf=barrido_watershed[nivel+1]
-        
+        #define las cotas inferior y superior        
         vacios=contarPixelesNoIdentificados(cota_inf,cota_sup)
         
-        while(vacios!=0):
+        while(vacios!=0): #hay que asignar pertenencia a todos los pixeles de la "tajada"
             for i in range (n_side):
                 for j in range(n_side):
                     if((pertenencia[i,j]==0)&(Data[i,j]<=cota_sup)&(Data[i,j]>cota_inf)):
@@ -158,12 +169,14 @@ def propagar():
                         contador+=cont
             
             vacios=contarPixelesNoIdentificados(cota_inf,cota_sup)
-#           print(vacios)
-    return contador/total
+
+    return contador/total #retorna rata de decisiones aleatorias
 
     
 perc=propagar()
 
+
+#guardar el mapa de pertenencia en  un archivo de texto
 def printPertenencia(textname,M):
     np.savetxt(textname,M)
 #    file=open(textname,"w")
@@ -180,5 +193,6 @@ plt.imshow(pertenencia)
 porcentajeAleatorio=perc*100
 plt.title("matriz de pertenencia ( "+str(porcentajeAleatorio) +" % aleatorio)", fontsize=18)
 plt.savefig("Pertenencia.png")
+
 
 printPertenencia("pertenencia.txt",pertenencia)
