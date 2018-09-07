@@ -12,10 +12,6 @@ data1 = np.loadtxt("Halo3d_Compact.txt")
 data1=np.transpose(data1)
 
 
-VxFile=open("Vx_grid.txt","w")
-VyFile=open("Vy_grid.txt","w")
-VzFile=open("Vz_grid.txt","w")
-
 
 X=data1[0]
 Y=data1[1]
