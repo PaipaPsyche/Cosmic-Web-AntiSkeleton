@@ -29,17 +29,19 @@ M=data1[6]
 L_box  = 1200
 n_side = 150
 l_side = L_box/n_side
+
 #Dimensiones de la caja (L_box)
 #numero de voxeles por dimensión (en el volumen hay n_side ** 3  voxeles)
 #lado de cada voxel cúbico (l_side)
 
-
 delta_m=0.00001  # masa pequeña para evitar divergencia en la división
 
+vx_grid = np.ones([n_side, n_side, n_side])
+vy_grid = np.ones([n_side, n_side, n_side])
+vz_grid = np.ones([n_side, n_side, n_side])
 
 
 
-#Escribiendo el valor de las velocidades
 for i in range (n_side):
     print("calculo" , i)
     for j in range (n_side):
@@ -54,12 +56,10 @@ for i in range (n_side):
             tmp_vz = VZ[ii]
             tmp_m = M[ii]
             
-            vx_grid = np.sum(tmp_m * tmp_vx) / (np.sum(tmp_m)+delta_m)
-            vy_grid = np.sum(tmp_m * tmp_vy) / (np.sum(tmp_m)+delta_m)
-            vz_grid = np.sum(tmp_m * tmp_vz) / (np.sum(tmp_m)+delta_m)
-            VxFile.write(str(i)+" "+str(j)+" "+str(k)+" "+str(vx_grid)+"\n")
-            VyFile.write(str(i)+" "+str(j)+" "+str(k)+" "+str(vy_grid)+"\n")
-            VzFile.write(str(i)+" "+str(j)+" "+str(k)+" "+str(vz_grid)+"\n")
-VxFile.close()
-VyFile.close()
-VzFile.close()
+            vx_grid[i,j,k] = np.sum(tmp_m * tmp_vx) / (np.sum(tmp_m)+delta_m)
+            vy_grid[i,j,k] = np.sum(tmp_m * tmp_vy) / (np.sum(tmp_m)+delta_m)
+            vz_grid[i,j,k] = np.sum(tmp_m * tmp_vz) / (np.sum(tmp_m)+delta_m)
+
+np.save("Vx_grid",vx_grid)
+np.save("Vy_grid",vy_grid)
+np.save("Vz_grid",vz_grid)
