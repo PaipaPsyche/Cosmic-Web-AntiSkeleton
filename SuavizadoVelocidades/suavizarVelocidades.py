@@ -26,3 +26,4 @@ def definirDivergencia(vx,vy,vz):
     return div
 
 Div=definirDivergencia(vx_gridConv,vy_gridConv,vz_gridConv)
+np.save("Divergencia",Div)
