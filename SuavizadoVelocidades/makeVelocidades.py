@@ -4,27 +4,27 @@ Created on Fri Sep  7 09:48:44 2018
 @author: david
 """
 import numpy as np
-import matplotlib.pyplot as plt
-from astropy.convolution import Gaussian2DKernel,convolve
+#import matplotlib.pyplot as plt
+#from astropy.convolution import Gaussian2DKernel,convolve
 
 #Data Loading========
-data1 = np.loadtxt("Halo3d_Compact.txt")
+data1 = np.loadtxt("HaloCpt.txt")
 data1=np.transpose(data1)
 
 
 
-X=data1[0]
-Y=data1[1]
-Z=data1[2]
-VX=data1[3]
-VY=data1[4]
-VZ=data1[5]
-M=data1[6]
+X=np.array(data1[0])
+Y=np.array(data1[1])
+Z=np.array(data1[2])
+VX=np.array(data1[3])
+VY=np.array(data1[4])
+VZ=np.array(data1[5])
+M=np.array(data1[6])
 
 #======================
 L_box  = 1200
-n_side = 150
-l_side = L_box/n_side
+n_side = 120
+l_side = int(L_box/n_side)
 
 #Dimensiones de la caja (L_box)
 #numero de voxeles por dimensión (en el volumen hay n_side ** 3  voxeles)
