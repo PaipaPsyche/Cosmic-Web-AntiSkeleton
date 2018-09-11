@@ -9,7 +9,7 @@ vz_grid=np.load("Vz_grid.npy")
 n_side=np.shape(vx_grid)[0]
 
 #convolucion gaussiana 3D
-sigma=10
+sigma=3
 
 vx_gridConv=scpimg.filters.gaussian_filter(vx_grid,sigma)
 vy_gridConv=scpimg.filters.gaussian_filter(vy_grid,sigma)
