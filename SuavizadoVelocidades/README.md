@@ -23,5 +23,5 @@
 varia segun su valor de divergencia.
 * Imprime imágenes a un intervalo dado para construir por capas la estructura formada.
 
-###s ShellGif.py
+### ShellGif.py
 * Se construye un .GIF con las imagenes ya hechas de la reconstruccion por capas de las estructuras propouestas.
