@@ -29,8 +29,7 @@ def plotStructure( umbral,filename, structure="patches"):
     fig=plt.figure(figsize=[12,12])
     ax=fig.add_subplot(111,projection='3d')
     cm = plt.cm.get_cmap('jet')
-#    normalize = matplotlib.colors.Normalize(vmin=minimo_div, vmax=maximo_div)
-#    colors = [cmap(normalize(value)) for value in div]
+#    Este paso es para definir xlim,ylim,zlim como los bordes de la caja
     ax.scatter([0,120],[0,120],[0,120],c='k',s=0.1)
     plt.xlabel("$10^7$ Pc",fontsize=15)
     plt.ylabel("$10^7$ Pc",fontsize=15)
@@ -38,8 +37,7 @@ def plotStructure( umbral,filename, structure="patches"):
     sc= ax.scatter(x , y , z , c=div[x,y,z], vmin=minimo_div ,vmax=maximo_div , s=0.6 ,cmap=cm,alpha=0.4)
     
     plt.colorbar(sc)
-#    cax, _ = matplotlib.colorbar.make_axes(ax)
-#    cbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=normalize)
+#   finalmente un colorbar valido y estatico
     fig.savefig(filename)
 
 #plotStructure(40,"prueba.png",structure="patches")
