@@ -30,30 +30,49 @@ sorted_vol=np.array(sorted_vol)
 
 
 
+#
+#
+#n_tiles=3
+#
+#plt.figure(figsize=[50,8*n_tiles])
+#plt.suptitle("Histogramas de masa",fontsize=30)
+#for i in range(n_tiles):
+#    plt.subplot(n_tiles,1,i+1)
+#    Bins=np.arange(n_parches) + 0.5
+#    vals,bins,ptchs=plt.hist(PERT_lin,bins=Bins,edgecolor='black', linewidth=1.2,density=True)
+#    n_inf=i*(n_parches/n_tiles)
+#    n_sup=(i+1)*(n_parches/n_tiles)
+#    plt.xticks(np.arange(n_inf,n_sup))
+#    plt.xlim(n_inf+0.5,n_sup)
+#    plt.ylim(0,np.amax(vals)*1.1)
+#    plt.xlabel("numero de cumulo",fontsize=15)
+#    plt.ylabel("Volumen comparativo",fontsize=15)
+#
+#plt.savefig("MassHistogram.png")
+#
+#
+#
+#n_superiores=n_parches
+#File=open(str(n_superiores)+"CumulosSuperiores.txt","w")
+#for i in range (n_superiores):
+#    File.write("Cumulo_"+str(int(sorted_vol[i,0]))+" "+str(sorted_vol[i,1])+"\n")
+#File.close()
 
 
-n_tiles=3
+#Histograma de volumen
 
-plt.figure(figsize=[50,8*n_tiles])
-plt.suptitle("Histogramas de masa",fontsize=30)
-for i in range(n_tiles):
-    plt.subplot(n_tiles,1,i+1)
-    Bins=np.arange(n_parches) + 0.5
-    vals,bins,ptchs=plt.hist(PERT_lin,bins=Bins,edgecolor='black', linewidth=1.2,density=True)
-    n_inf=i*(n_parches/n_tiles)
-    n_sup=(i+1)*(n_parches/n_tiles)
-    plt.xticks(np.arange(n_inf,n_sup))
-    plt.xlim(n_inf+0.5,n_sup)
-    plt.ylim(0,np.amax(vals)*1.1)
-    plt.xlabel("numero de cumulo",fontsize=15)
-    plt.ylabel("Volumen comparativo",fontsize=15)
+log_vol=np.array(np.log10(sorted_vol.T[1]*1000))
+#cada voxel tiene un volumen de 1000Mpc3
 
-plt.savefig("MassHistogram.png")
+plt.figure(figsize=[12,4])
+plt.hist(log_vol,bins=30,edgecolor='k')
+plt.xlim(np.amin(log_vol),np.amax(log_vol))
+plt.title("Histogrma de volumen",fontsize=18)
+plt.xlabel("$log_{10}$(Volumen[$Mpc³$])",fontsize=12)
+plt.savefig("HistogramaMasa.png")
 
 
 
-n_superiores=n_parches
-File=open(str(n_superiores)+"CumulosSuperiores.txt","w")
-for i in range (n_superiores):
-    File.write("Cumulo_"+str(int(sorted_vol[i,0]))+" "+str(sorted_vol[i,1])+"\n")
-File.close()
+
+
+
