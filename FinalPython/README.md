@@ -16,7 +16,7 @@ In order to RUN the main sequence you need the following files in the Directory:
 
 - **Vz_grid.npy** (binary) *Binary file that contains the 3D grid corresponding to speed in Z - Axis* (if not, refer to VelocitiesBuild/)
 
-- **parameters.csv** (CSV) *CSV file that contains the sigmas that will be evaluated . Integer sigmas from SigmaInicial to SigmaFinal with step of 1 *
+- **parameters.csv** (CSV) *CSV file that contains the sigmas that will be evaluated . Integer sigmas from SigmaInicial to SigmaFinal with step of 1* 
 
 - **Divergencia_Sigmas.py** (python) *Python code that uses speed binary files mentioned before to calculate the Divergence scalar, creating this way div_XX.py*
 
