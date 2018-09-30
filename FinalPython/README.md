@@ -2,6 +2,37 @@
 
 ## Directories
 
+
+
+### VelocitiesBuild/
+Takes a file with the *Mass, 3D postion and 3D Speed* variables and build a grid of 120 x 120 x 120 (adjustable) for every axis for the components of the speed. This speed is the speed of the center of mass.
+
+
+#### IMPORTANT
+In order to RUN the main sequence you need the following files in the Directory:
+
+
+
+- **HaloCpt.txt** (Text) *Data file with the positions, velocities and mass of every object* 
+
+- **BuildVelocities.py** (python) *Python that build the speed binaries*
+
+- **Makefile** (Makefile) *Secuence that compiles the code for building velocity binaries*
+
+
+#### RUN
+
+##### Makefile
+
+For building the binaries for the Velocities in X,Y,Z, you should :
+```
+make
+```
+
+Once built the binaries, you must copy them into the **Watershed3D/** directory.
+
+
+
 ### Watershed3D/
 Runs the watershed on the given velocities according to a sigma previously set to interpolate the speeds.
 
@@ -45,34 +76,5 @@ make clean
 
 
 
-
-
-
-### VelocitiesBuild/
-Takes a file with the *Mass, 3D postion and 3D Speed* variables and build a grid of 120 x 120 x 120 (adjustable) for every axis for the components of the speed. This speed is the speed of the center of mass.
-
-
-#### IMPORTANT
-In order to RUN the main sequence you need the following files in the Directory:
-
-
-
-- **HaloCpt.txt** (Text) *Data file with the positions, velocities and mass of every object* 
-
-- **BuildVelocities.py** (python) *Python that build the speed binaries*
-
-- **Makefile** (Makefile) *Secuence that compiles the code for building velocity binaries*
-
-
-#### RUN
-
-##### Makefile
-
-For building the binaries for the Velocities in X,Y,Z, you should :
-```
-make
-```
-
-Once built the binaries, you must copy them into the **Watershed3D/** directory.
 
 
