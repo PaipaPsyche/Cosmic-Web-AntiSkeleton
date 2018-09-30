@@ -1,0 +1,62 @@
+"""
+Created on Tue Sep 25 13:52:54 2018
+
+@author: david
+"""
+import numpy as np
+
+#Datos relevantes
+L_box  = 1200
+n_side = 120
+#cargando datos 
+data1 = np.loadtxt("HaloCpt.txt")
+data1=np.transpose(data1)
+
+# cargando variables (arreglos)
+X=np.array(data1[0])
+Y=np.array(data1[1])
+Z=np.array(data1[2])
+VX=np.array(data1[3])
+VY=np.array(data1[4])
+VZ=np.array(data1[5])
+M=np.array(data1[6])
+
+
+
+#======================
+
+l_side = int(L_box/n_side)
+
+#Dimensiones de la caja (L_box)
+#numero de voxeles por dimensión (en el volumen hay n_side ** 3  voxeles)
+#lado de cada voxel cúbico (l_side)
+
+delta_m=0.00001  # masa pequeña para evitar divergencia en la división
+
+vx_grid = np.ones([n_side, n_side, n_side])
+vy_grid = np.ones([n_side, n_side, n_side])
+vz_grid = np.ones([n_side, n_side, n_side])
+
+
+
+for i in range (n_side):
+    print("calculo" , i)
+    for j in range (n_side):
+        for k in range(n_side):
+            min_x = i * l_side
+            min_y = j * l_side
+            min_z = k * l_side
+            ii = (X>min_x) & (X<min_x + l_side) & (Y>min_y) & (Y<min_y+l_side)& (Z>min_z) & (Z<min_z+l_side)
+            
+            tmp_vx = VX[ii]
+            tmp_vy = VY[ii]
+            tmp_vz = VZ[ii]
+            tmp_m = M[ii]
+            
+            vx_grid[i,j,k] = np.sum(tmp_m * tmp_vx) / (np.sum(tmp_m)+delta_m)
+            vy_grid[i,j,k] = np.sum(tmp_m * tmp_vy) / (np.sum(tmp_m)+delta_m)
+            vz_grid[i,j,k] = np.sum(tmp_m * tmp_vz) / (np.sum(tmp_m)+delta_m)
+
+np.save("Vx_grid",vx_grid)
+np.save("Vy_grid",vy_grid)
+np.save("Vz_grid",vz_grid)

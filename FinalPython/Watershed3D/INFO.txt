@@ -1,0 +1,4 @@
+Sigma inferior = 1
+Sigma superior = 20
+Tolerancia de vacios = 300
+Distancia de tolerancia = 2*sigma
